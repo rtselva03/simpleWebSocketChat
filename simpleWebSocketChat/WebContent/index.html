@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Websocket Chat</title>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> 
+
+</head>
+<body>
+	<div class="container">
+    	<div class="row">
+	    	<div class="panel panel-default"> 
+	    		<div class="panel-heading">Group Chat - Welcome <span class="username text-primary text-right">unknown</span></div>
+	          		<div class="panel-body"> 
+	          			<div class="chat-history">
+	          				 
+	          			</div>
+	          		
+		          		<div class="form-group">
+			          		<div class="row">
+			          			<div class="col-md-10"><input class="form-control textarea" type="text"></div>
+			          			<div class="col-md-2"><button class="form-control send btn btn-sm btn-primary">Send</button></div>
+			          		</div>
+		          		</div> 
+	          		
+	          		</div>
+	          	</div>
+    	
+    	</div>
+    </div>
+
+<script type="text/javascript"> 
+	var websocket=new WebSocket("ws://localhost:8090/ChatApp/chat"); 
+	
+	
+	websocket.onopen=function(){
+		console.log("connection initiated")
+	}
+	
+	websocket.onclose=function(){
+		console.log("connnection closed")
+	}
+	
+	websocket.onerror=function(){
+		console.log("connnection Error")
+	}
+	
+	websocket.onmessage=function(message){
+		var message=message.data;
+		var sender=message.split("~")[1];
+		var message=message.split("~")[0];
+		$(".chat-history").append(getChatTemplate(sender,message))
+	}
+	
+	
+	
+	$(".send").on("click",function(){ 
+		websocket.send($(".textarea").val()) 
+		$(".textarea").val("");
+	})
+	
+	
+	
+	
+	getChatTemplate=function(sender,message){
+		return '<div class="panel panel-defalt">@<span class="chat-user">'+sender+'</span>:<span class="message">'+message+'</span></div>';
+	}
+	
+	
+	
+	
+	//websocket.
+	
+	
+</script>
+</body>
+</html>
